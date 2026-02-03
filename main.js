@@ -135,14 +135,16 @@ const weatherIcons = {
 
 // === AI Image Generation ===
 const AI_IMAGE_CONFIG = {
-  provider: 'pollinations',
-  baseUrl: 'https://image.pollinations.ai/prompt/',
-  width: 512,
-  height: 512,
-  outfitWidth: 640,
-  outfitHeight: 900,
-  extraParams: { nologo: 'true' },
+  provider: 'openai',
+  endpoint: '/api/image',
+  sizes: {
+    square: '1024x1024',
+    portrait: '1024x1536',
+    landscape: '1536x1024',
+  },
 };
+
+const TRANSPARENT_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 
 const ITEM_LABELS = {
   beanie: 'beanie',
@@ -220,24 +222,63 @@ const SITUATION_PROMPTS = {
   exercise: 'athleisure',
 };
 
-function hashString(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
+const aiImageCache = new Map();
+
+function resolveImageSize({ width, height, type } = {}) {
+  if (type === 'portrait') return AI_IMAGE_CONFIG.sizes.portrait;
+  if (type === 'landscape') return AI_IMAGE_CONFIG.sizes.landscape;
+  if (type === 'square') return AI_IMAGE_CONFIG.sizes.square;
+  if (width && height) {
+    if (width > height) return AI_IMAGE_CONFIG.sizes.landscape;
+    if (height > width) return AI_IMAGE_CONFIG.sizes.portrait;
   }
-  return Math.abs(hash);
+  return AI_IMAGE_CONFIG.sizes.square;
 }
 
-function buildAIImageUrl(prompt, { width, height, seed } = {}) {
-  const params = new URLSearchParams();
-  params.set('width', width || AI_IMAGE_CONFIG.width);
-  params.set('height', height || AI_IMAGE_CONFIG.height);
-  if (seed !== undefined) params.set('seed', seed);
-  Object.entries(AI_IMAGE_CONFIG.extraParams || {}).forEach(([key, value]) => {
-    params.set(key, value);
+async function fetchAIImage(prompt, size) {
+  const cacheKey = `${size}|${prompt}`;
+  if (aiImageCache.has(cacheKey)) {
+    return aiImageCache.get(cacheKey);
+  }
+
+  const res = await fetch(AI_IMAGE_CONFIG.endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, size }),
   });
-  return `${AI_IMAGE_CONFIG.baseUrl}${encodeURIComponent(prompt)}?${params.toString()}`;
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    const errMsg = errData?.error || errData?.message || 'AI image request failed.';
+    throw new Error(errMsg);
+  }
+
+  const data = await res.json();
+  if (!data?.dataUrl) {
+    throw new Error('AI image response missing dataUrl.');
+  }
+
+  aiImageCache.set(cacheKey, data.dataUrl);
+  return data.dataUrl;
+}
+
+function parseSize(size) {
+  const [w, h] = String(size || '').split('x').map((val) => Number.parseInt(val, 10));
+  if (!Number.isFinite(w) || !Number.isFinite(h)) {
+    return { width: 512, height: 512 };
+  }
+  return { width: w, height: h };
+}
+
+async function loadAIImage(img, prompt, size) {
+  const { width, height } = parseSize(size);
+  wireImageLoading(img, img.dataset.label || 'Outfit', width, height);
+  try {
+    const dataUrl = await fetchAIImage(prompt, size);
+    img.src = dataUrl;
+  } catch (err) {
+    img.src = makeFallbackSvg(img.dataset.label || 'Outfit', width, height);
+  }
 }
 
 function buildItemPrompt({ itemKey, gender, situation, category }) {
@@ -467,20 +508,16 @@ function renderOutfit(feelsLike, situation) {
     situation,
     category,
   });
-  const fullOutfitUrl = buildAIImageUrl(fullOutfitPrompt, {
-    width: AI_IMAGE_CONFIG.outfitWidth,
-    height: AI_IMAGE_CONFIG.outfitHeight,
-    seed: hashString(`outfit-${currentGender}-${situation}-${category}`) % 100000,
-  });
+  const fullOutfitSize = resolveImageSize({ type: 'portrait' });
   const fullOutfitContainer = document.getElementById('full-outfit-container');
 
   if (fullOutfitImg && fullOutfitContainer) {
     fullOutfitImg.classList.add('ai-image');
     fullOutfitImg.loading = 'lazy';
     fullOutfitImg.decoding = 'async';
-    fullOutfitImg.src = fullOutfitUrl;
+    fullOutfitImg.src = TRANSPARENT_PIXEL;
     fullOutfitImg.alt = `${currentGender === 'male' ? 'Men' : 'Women'} outfit example`;
-    wireImageLoading(fullOutfitImg, fullOutfitImg.alt, AI_IMAGE_CONFIG.outfitWidth, AI_IMAGE_CONFIG.outfitHeight);
+    loadAIImage(fullOutfitImg, fullOutfitPrompt, fullOutfitSize);
     fullOutfitContainer.classList.remove('hidden');
   } else if (fullOutfitContainer) {
     fullOutfitContainer.classList.add('hidden');
@@ -495,12 +532,10 @@ function renderOutfit(feelsLike, situation) {
         situation,
         category,
       });
-      const imgUrl = buildAIImageUrl(prompt, {
-        seed: hashString(`${imgKey}-${currentGender}-${situation}-${category}`) % 100000,
-      });
+      const imgSize = resolveImageSize({ type: 'square' });
       return `
         <div class="outfit-card">
-          <img class="outfit-img ai-image" src="${imgUrl}" alt="${name}" loading="lazy" decoding="async" data-label="${name}">
+          <img class="outfit-img ai-image" src="${TRANSPARENT_PIXEL}" alt="${name}" loading="lazy" decoding="async" data-label="${name}" data-prompt="${prompt}" data-size="${imgSize}">
           <div class="name">${name}</div>
           <div class="desc">${desc}</div>
         </div>
@@ -508,7 +543,9 @@ function renderOutfit(feelsLike, situation) {
     }).join('');
 
   cardsContainer.querySelectorAll('img.outfit-img').forEach((img) => {
-    wireImageLoading(img, img.dataset.label || 'Outfit', AI_IMAGE_CONFIG.width, AI_IMAGE_CONFIG.height);
+    const prompt = img.dataset.prompt;
+    const size = img.dataset.size || resolveImageSize({ type: 'square' });
+    loadAIImage(img, prompt, size);
   });
 
   cardsContainer.classList.remove('fade-in');
