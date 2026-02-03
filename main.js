@@ -175,12 +175,48 @@ const IMAGES = {
   scarf: 'https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?w=300&h=300&fit=crop',
   gloves: 'https://images.unsplash.com/photo-1545170832-bec0c7f04024?w=300&h=300&fit=crop',
   cap: 'https://images.unsplash.com/photo-1588850561407-ed78c334e67a?w=300&h=300&fit=crop',
-  beanie: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=300&h=300&fit=crop',
+  beanie: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Beanie',
   earMuffs: 'https://images.unsplash.com/photo-1457545195570-67f207084966?w=300&h=300&fit=crop',
   sunglasses: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=300&h=300&fit=crop',
   loafers: 'https://images.unsplash.com/photo-1533867617858-e7b97060509?w=300&h=300&fit=crop',
   dressShoes: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=300&h=300&fit=crop',
   winterBoots: 'https://images.unsplash.com/photo-1542840410-3092f99611a3?w=300&h=300&fit=crop',
+  m_slacks: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Men+Slacks',
+  m_field_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Field+Jacket',
+  m_jumper: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Jumper',
+  m_fleece_pants: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Pants',
+  m_heat_tech: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Heat+Tech',
+  m_turtleneck: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Turtleneck',
+  f_fleece_slacks: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Slacks',
+  f_heat_tech: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Heat+Tech',
+  f_turtleneck: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Turtleneck',
+  m_knit_vest: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Knit+Vest',
+  m_leather_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Leather+Jacket',
+  f_knit_tshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Knit+T-shirt',
+  f_leather_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Leather+Jacket',
+  m_functional_tshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+T-shirt',
+  m_windbreaker: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Windbreaker',
+  m_functional_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+Longsleeve',
+  m_fleece_sweatshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Sweatshirt',
+  m_training_pants: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Pants',
+  m_training_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Jacket',
+  m_fleece_leggings: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Leggings',
+  m_puffer_vest: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Puffer+Vest',
+  m_fleece_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Longsleeve',
+  m_fleece_training_pants: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Training+Pants',
+  m_fleece_puffer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Puffer',
+  m_neck_warmer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Neck+Warmer',
+  f_functional_tshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+T-shirt',
+  f_windbreaker: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Windbreaker',
+  f_functional_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+Longsleeve',
+  f_fleece_sweatshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Sweatshirt',
+  f_training_leggings: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Leggings',
+  f_training_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Jacket',
+  f_fleece_leggings: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Leggings',
+  f_puffer_vest: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Puffer+Vest',
+  f_fleece_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Longsleeve',
+  f_fleece_puffer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Puffer',
+  f_neck_warmer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Neck+Warmer'
 };
 
 // === Full Outfit Images ===
@@ -205,13 +241,13 @@ const FULL_OUTFITS = {
     chilly: 'https://images.unsplash.com/photo-1552874869-5c39ec9498dc?w=600&h=800&fit=crop',
     cold: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600&h=800&fit=crop',
     veryCold: 'https://images.unsplash.com/photo-1485230948881-61a8a83504fb?w=600&h=800&fit=crop',
-    freezing: 'https://images.unsplash.com/photo-151657515020-600&h=800&fit=crop',
+    freezing: 'https://via.placeholder.com/600x800.png?text=Nano+Banana+Drawing+of+Freezing+Outfit',
   },
 };
 
 function getImg(key) {
   const prefix = currentGender === 'male' ? 'm_' : 'f_';
-  return IMAGES[prefix + key] || IMAGES[key] || '';
+  return IMAGES[prefix + key] || IMAGES[key] || `https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+${key}`;
 }
 
 // === Temperature Range Labels ===
