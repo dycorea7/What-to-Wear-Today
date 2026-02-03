@@ -13,8 +13,11 @@
   <div class="app">
     <!-- Header -->
     <header class="header">
-      <h1>오늘 뭐 입지?</h1>
-      <p class="subtitle">날씨 기반 옷차림 추천 서비스</p>
+      <div class="header-content">
+        <h1>오늘 뭐 입지?</h1>
+        <p class="subtitle">날씨 기반 옷차림 추천 서비스</p>
+      </div>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="테마 변경">🌙</button>
     </header>
 
     <!-- Search Section -->
@@ -119,6 +122,12 @@
           오늘의 추천 옷차림
         </h3>
         <div id="temp-label" class="temp-label"></div>
+
+        <!-- Full Outfit Image -->
+        <div id="full-outfit-container" class="full-outfit-container hidden">
+          <img id="full-outfit-img" src="" alt="추천 코디 예시" />
+        </div>
+
         <div id="outfit-cards" class="outfit-cards"></div>
         <div id="outfit-tip" class="outfit-tip"></div>
       </div>
