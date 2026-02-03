@@ -1,14 +1,148 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>오늘 뭐 입지? - 날씨 기반 옷차림 추천</title>
   <link href='/style.css' rel='stylesheet'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <h1>오늘 뭐 입지?</h1>
+      <p class="subtitle">날씨 기반 옷차림 추천 서비스</p>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-box">
+        <input
+          type="text"
+          id="city-input"
+          placeholder="도시 이름을 입력하세요 (예: Seoul, Busan)"
+          autocomplete="off"
+        />
+        <button id="search-btn" aria-label="검색">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+      <button id="location-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/>
+          <circle cx="12" cy="9" r="2.5"/>
+        </svg>
+        현재 위치로 검색
+      </button>
+    </section>
+
+    <!-- Loading -->
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>날씨 정보를 가져오는 중...</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error" class="error-msg hidden"></div>
+
+    <!-- Weather Result -->
+    <section id="result" class="result hidden">
+      <!-- Weather Card -->
+      <div class="weather-card">
+        <div class="weather-main">
+          <div class="weather-icon" id="weather-icon"></div>
+          <div class="weather-temp">
+            <span id="temp" class="temp-value"></span>
+            <span class="temp-unit">°C</span>
+          </div>
+        </div>
+        <div class="weather-info">
+          <h2 id="city-name" class="city-name"></h2>
+          <p id="weather-desc" class="weather-desc"></p>
+          <div class="weather-details">
+            <div class="detail-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/><path d="M12 22v-6"/></svg>
+              <span>체감 <strong id="feels-like"></strong></span>
+            </div>
+            <div class="detail-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              <span>습도 <strong id="humidity"></strong></span>
+            </div>
+            <div class="detail-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0v-7"/></svg>
+              <span>비 확률 <strong id="rain-prob"></strong></span>
+            </div>
+            <div class="detail-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+              <span>바람 <strong id="wind"></strong></span>
+            </div>
+            <div class="detail-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <span>최고/최저 <strong id="temp-range"></strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gender Toggle -->
+      <div class="gender-toggle">
+        <span class="filter-label">성별</span>
+        <div class="gender-buttons">
+          <button class="gender-btn active" data-gender="male">👨 남자</button>
+          <button class="gender-btn" data-gender="female">👩 여자</button>
+        </div>
+      </div>
+
+      <!-- Situation Filter -->
+      <div class="situation-filters">
+        <span class="filter-label">상황별 코디</span>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-situation="casual">🧢 캐주얼</button>
+          <button class="filter-btn" data-situation="commute">💼 출근</button>
+          <button class="filter-btn" data-situation="date">💕 데이트</button>
+          <button class="filter-btn" data-situation="exercise">🏃 운동</button>
+        </div>
+      </div>
+
+      <!-- Outfit Recommendation -->
+      <div class="outfit-section">
+        <h3 class="outfit-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.38 3.46L16 2 12 5.5 8 2l-4.38 1.46a2 2 0 0 0-1.34 2.23l2.1 12.6A2 2 0 0 0 6.35 20h11.3a2 2 0 0 0 1.97-1.71l2.1-12.6a2 2 0 0 0-1.34-2.23z"/>
+          </svg>
+          오늘의 추천 옷차림
+        </h3>
+        <div id="temp-label" class="temp-label"></div>
+        <div id="outfit-cards" class="outfit-cards"></div>
+        <div id="outfit-tip" class="outfit-tip"></div>
+      </div>
+
+      <!-- Rain/Snow Alert -->
+      <div id="weather-alert" class="weather-alert hidden"></div>
+
+      <!-- Share -->
+      <div class="share-section">
+        <button id="kakao-share-btn" class="share-btn kakao">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 1C5.9 1 1 5.1 1 10.2c0 3.3 2.2 6.2 5.5 7.8l-1.1 4.1c-.1.2.1.4.3.4h.2l4.8-3.2c.7.1 1.5.2 2.3.2 6.1 0 11-4.1 11-9.3S18.1 1 12 1z" fill="#3C1E1E"/></svg>
+          카카오톡으로 공유하기
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Open-Meteo API 기반 | 무료 날씨 데이터 제공</p>
+    </footer>
+  </div>
+
+  <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+  <script type="text/javascript" src="/outfit-data.js"></script>
   <script defer type="text/javascript" src="/main.js"></script>
 </body>
 </html>
