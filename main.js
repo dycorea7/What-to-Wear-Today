@@ -39,6 +39,7 @@ const translations = {
     date: '💕 데이트',
     exercise: '🏃 운동',
     outfitTitle: '오늘의 추천 옷차림',
+    aiNote: 'AI 생성 이미지입니다. 실제와 다를 수 있어요.',
     rainAlert: '<strong>비 예보!</strong> 우산을 챙기세요. 방수 소재의 겉옷과 방수 신발을 추천합니다.',
     snowAlert: '<strong>눈 예보!</strong> 미끄럼 방지 신발을 신고, 방수 소재의 아우터를 입으세요.',
     share: '카카오톡으로 공유하기',
@@ -73,6 +74,7 @@ const translations = {
     date: '💕 Date',
     exercise: '🏃 Exercise',
     outfitTitle: "Today's Outfit Recommendation",
+    aiNote: 'Images are AI-generated and may differ from reality.',
     rainAlert: '<strong>Rain Alert!</strong> Take an umbrella. Waterproof outerwear and shoes are recommended.',
     snowAlert: '<strong>Snow Alert!</strong> Wear non-slip shoes and waterproof outerwear.',
     share: 'Share on KakaoTalk',
@@ -131,123 +133,160 @@ const weatherIcons = {
   96: '⛈️', 99: '⛈️',
 };
 
-// === Clothing Images ===
-const IMAGES = {
-  m_tanktop: 'https://images.unsplash.com/photo-1503341504253-dff4855b8c65?w=300&h=300&fit=crop',
-  m_tshirt: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop',
-  m_longSleeve: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=300&h=300&fit=crop',
-  m_shirt: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=300&h=300&fit=crop',
-  m_sweatshirt: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=300&h=300&fit=crop',
-  m_knit: 'https://images.unsplash.com/photo-1638000175091-2bfa4cfbc58b?w=300&h=300&fit=crop',
-  m_cardigan: 'https://images.unsplash.com/photo-1614975059251-992f11792b9f?w=300&h=300&fit=crop',
-  m_blazer: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=300&h=300&fit=crop',
-  m_trenchCoat: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=300&h=300&fit=crop',
-  m_woolCoat: 'https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?w=300&h=300&fit=crop',
-  m_puffer: 'https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?w=300&h=300&fit=crop',
-  m_shorts: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=300&h=300&fit=crop',
-  m_jeans: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop',
-  m_chinos: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=300&h=300&fit=crop',
-  m_sneakers: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop',
-  m_sandals: 'https://images.unsplash.com/photo-1621251944686-350c33a246a?w=300&h=300&fit=crop',
-  f_tanktop: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=300&h=300&fit=crop',
-  f_tshirt: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop',
-  f_blouse: 'https://images.unsplash.com/photo-1598554747436-c9293d6a588f?w=300&h=300&fit=crop',
-  f_dress: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop',
-  f_knit: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=300&h=300&fit=crop',
-  f_cardigan: 'https://images.unsplash.com/photo-1434389677669-e08b4cda3f0a?w=300&h=300&fit=crop',
-  f_jacket: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&h=300&fit=crop',
-  f_trenchCoat: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=300&h=300&fit=crop',
-  f_woolCoat: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=300&h=300&fit=crop',
-  f_puffer: 'https://images.unsplash.com/photo-1544923246-77307dd270c5?w=300&h=300&fit=crop',
-  f_skirt: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=300&h=300&fit=crop',
-  f_jeans: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=300&h=300&fit=crop',
-  f_slacks: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300&h=300&fit=crop',
-  f_leggings: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=300&h=300&fit=crop',
-  f_sneakers: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=300&h=300&fit=crop',
-  f_boots: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=300&h=300&fit=crop',
-  f_sandals: 'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=300&h=300&fit=crop',
-  f_longSleeve: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=300&h=300&fit=crop',
-  f_shirt: 'https://images.unsplash.com/photo-1598554747436-c9293d6a588f?w=300&h=300&fit=crop',
-  f_blazer: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&h=300&fit=crop',
-  f_shorts: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=300&h=300&fit=crop',
-  f_sweatshirt: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=300&h=300&fit=crop',
-  f_chinos: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300&h=300&fit=crop',
-  scarf: 'https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?w=300&h=300&fit=crop',
-  gloves: 'https://images.unsplash.com/photo-1545170832-bec0c7f04024?w=300&h=300&fit=crop',
-  cap: 'https://images.unsplash.com/photo-1588850561407-ed78c334e67a?w=300&h=300&fit=crop',
-  beanie: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Beanie',
-  earMuffs: 'https://images.unsplash.com/photo-1457545195570-67f207084966?w=300&h=300&fit=crop',
-  sunglasses: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=300&h=300&fit=crop',
-  loafers: 'https://images.unsplash.com/photo-1533867617858-e7b97060509?w=300&h=300&fit=crop',
-  dressShoes: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=300&h=300&fit=crop',
-  winterBoots: 'https://images.unsplash.com/photo-1542840410-3092f99611a3?w=300&h=300&fit=crop',
-  m_slacks: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Men+Slacks',
-  m_field_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Field+Jacket',
-  m_jumper: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Jumper',
-  m_fleece_pants: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Pants',
-  m_heat_tech: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Heat+Tech',
-  m_turtleneck: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Turtleneck',
-  f_fleece_slacks: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Slacks',
-  f_heat_tech: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Heat+Tech',
-  f_turtleneck: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Turtleneck',
-  m_knit_vest: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Knit+Vest',
-  m_leather_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Leather+Jacket',
-  f_knit_tshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Knit+T-shirt',
-  f_leather_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Leather+Jacket',
-  m_functional_tshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+T-shirt',
-  m_windbreaker: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Windbreaker',
-  m_functional_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+Longsleeve',
-  m_fleece_sweatshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Sweatshirt',
-  m_training_pants: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Pants',
-  m_training_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Jacket',
-  m_fleece_leggings: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Leggings',
-  m_puffer_vest: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Puffer+Vest',
-  m_fleece_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Longsleeve',
-  m_fleece_training_pants: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Training+Pants',
-  m_fleece_puffer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Puffer',
-  m_neck_warmer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Neck+Warmer',
-  f_functional_tshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+T-shirt',
-  f_windbreaker: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Windbreaker',
-  f_functional_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Functional+Longsleeve',
-  f_fleece_sweatshirt: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Sweatshirt',
-  f_training_leggings: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Leggings',
-  f_training_jacket: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Training+Jacket',
-  f_fleece_leggings: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Leggings',
-  f_puffer_vest: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Puffer+Vest',
-  f_fleece_longSleeve: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Longsleeve',
-  f_fleece_puffer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Fleece+Puffer',
-  f_neck_warmer: 'https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+Neck+Warmer'
+// === AI Image Generation ===
+const AI_IMAGE_CONFIG = {
+  provider: 'pollinations',
+  baseUrl: 'https://image.pollinations.ai/prompt/',
+  width: 512,
+  height: 512,
+  outfitWidth: 640,
+  outfitHeight: 900,
+  extraParams: { nologo: 'true' },
 };
 
-// === Full Outfit Images ===
-const FULL_OUTFITS = {
-  male: {
-    veryHot: 'https://images.unsplash.com/photo-1565538421053-dff4855b8c65?w=600&h=800&fit=crop',
-    hot: 'https://images.unsplash.com/photo-1512413914633-b5043f4041ea?w=600&h=800&fit=crop',
-    warm: 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=600&h=800&fit=crop',
-    mild: 'https://images.unsplash.com/photo-16171379687-b5742c160533?w=600&h=800&fit=crop',
-    cool: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&h=800&fit=crop',
-    chilly: 'https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=600&h=800&fit=crop',
-    cold: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&h=800&fit=crop',
-    veryCold: 'https://images.unsplash.com/photo-1548866532-628d05260f87?w=600&h=800&fit=crop',
-    freezing: 'https://images.unsplash.com/photo-1605763240004-7e93b172d754?w=600&h=800&fit=crop',
-  },
-  female: {
-    veryHot: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=800&fit=crop',
-    hot: 'https://images.unsplash.com/photo-1581044777550-4cfa607070c3?w=600&h=800&fit=crop',
-    warm: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&h=800&fit=crop',
-    mild: 'https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=600&h=800&fit=crop',
-    cool: 'https://images.unsplash.com/photo-1603144885860-2059345c2253?w=600&h=800&fit=crop',
-    chilly: 'https://images.unsplash.com/photo-1552874869-5c39ec9498dc?w=600&h=800&fit=crop',
-    cold: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600&h=800&fit=crop',
-    veryCold: 'https://images.unsplash.com/photo-1485230948881-61a8a83504fb?w=600&h=800&fit=crop',
-    freezing: 'https://via.placeholder.com/600x800.png?text=Nano+Banana+Drawing+of+Freezing+Outfit',
-  },
+const ITEM_LABELS = {
+  beanie: 'beanie',
+  blazer: 'blazer',
+  blouse: 'blouse',
+  boots: 'boots',
+  cap: 'baseball cap',
+  cardigan: 'cardigan',
+  chinos: 'chinos',
+  dress: 'dress',
+  dressShoes: 'dress shoes',
+  earMuffs: 'earmuffs',
+  field_jacket: 'field jacket',
+  fleece_leggings: 'fleece leggings',
+  fleece_longSleeve: 'fleece long sleeve top',
+  fleece_pants: 'fleece pants',
+  fleece_puffer: 'fleece puffer jacket',
+  fleece_slacks: 'fleece slacks',
+  fleece_sweatshirt: 'fleece sweatshirt',
+  fleece_training_pants: 'fleece training pants',
+  functional_longSleeve: 'performance long sleeve top',
+  functional_tshirt: 'performance t-shirt',
+  gloves: 'winter gloves',
+  heat_tech: 'thermal base layer',
+  jacket: 'light jacket',
+  jeans: 'jeans',
+  jumper: 'zip-up jacket',
+  knit: 'knit sweater',
+  knit_tshirt: 'knit short sleeve top',
+  knit_vest: 'knit vest',
+  leather_jacket: 'leather jacket',
+  leggings: 'leggings',
+  loafers: 'loafers',
+  longSleeve: 'long sleeve t-shirt',
+  neck_warmer: 'neck warmer',
+  puffer: 'puffer coat',
+  puffer_vest: 'puffer vest',
+  sandals: 'sandals',
+  scarf: 'scarf',
+  shirt: 'button-up shirt',
+  shorts: 'shorts',
+  skirt: 'skirt',
+  slacks: 'slacks',
+  sneakers: 'sneakers',
+  sunglasses: 'sunglasses',
+  sweatshirt: 'sweatshirt',
+  tanktop: 'tank top',
+  training_jacket: 'training jacket',
+  training_leggings: 'training leggings',
+  training_pants: 'training pants',
+  trenchCoat: 'trench coat',
+  tshirt: 't-shirt',
+  turtleneck: 'turtleneck sweater',
+  windbreaker: 'windbreaker',
+  winterBoots: 'winter boots',
+  woolCoat: 'wool coat',
 };
 
-function getImg(key) {
-  const prefix = currentGender === 'male' ? 'm_' : 'f_';
-  return IMAGES[prefix + key] || IMAGES[key] || `https://via.placeholder.com/300x300.png?text=Nano+Banana+Drawing+of+${key}`;
+const TEMP_PROMPTS = {
+  veryHot: 'very hot weather',
+  hot: 'hot weather',
+  warm: 'warm weather',
+  mild: 'mild weather',
+  cool: 'cool weather',
+  chilly: 'chilly weather',
+  cold: 'cold weather',
+  veryCold: 'very cold weather',
+  freezing: 'freezing weather',
+};
+
+const SITUATION_PROMPTS = {
+  casual: 'casual',
+  commute: 'smart commute',
+  date: 'date night',
+  exercise: 'athleisure',
+};
+
+function hashString(input) {
+  let hash = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash << 5) - hash + input.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function buildAIImageUrl(prompt, { width, height, seed } = {}) {
+  const params = new URLSearchParams();
+  params.set('width', width || AI_IMAGE_CONFIG.width);
+  params.set('height', height || AI_IMAGE_CONFIG.height);
+  if (seed !== undefined) params.set('seed', seed);
+  Object.entries(AI_IMAGE_CONFIG.extraParams || {}).forEach(([key, value]) => {
+    params.set(key, value);
+  });
+  return `${AI_IMAGE_CONFIG.baseUrl}${encodeURIComponent(prompt)}?${params.toString()}`;
+}
+
+function buildItemPrompt({ itemKey, gender, situation, category }) {
+  const itemLabel = ITEM_LABELS[itemKey] || itemKey.replace(/_/g, ' ');
+  const genderLabel = gender === 'male' ? 'men' : 'women';
+  const situationLabel = SITUATION_PROMPTS[situation] || 'casual';
+  const tempLabel = TEMP_PROMPTS[category] || 'mild weather';
+  return [
+    `Editorial lookbook studio photo of a ${itemLabel} for ${genderLabel}.`,
+    `${situationLabel} style for ${tempLabel}.`,
+    'Luxury fashion magazine aesthetic, soft diffused studio lighting, realistic fabric texture, high detail.',
+    'Monotone palette (black, gray, white) with minimal accents.',
+    'Soft neutral gradient background with subtle floor shadow, clean styling.',
+    'No text, no logo, no watermark.',
+  ].join(' ');
+}
+
+function buildOutfitPrompt({ gender, situation, category }) {
+  const genderLabel = gender === 'male' ? 'men' : 'women';
+  const situationLabel = SITUATION_PROMPTS[situation] || 'casual';
+  const tempLabel = TEMP_PROMPTS[category] || 'mild weather';
+  return [
+    `Editorial lookbook studio photo, full-body ${genderLabel} outfit on a mannequin.`,
+    `${situationLabel} look for ${tempLabel}.`,
+    'Luxury fashion magazine aesthetic, soft diffused studio lighting, high detail.',
+    'Monotone palette (black, gray, white) with minimal accents.',
+    'Soft neutral gradient background with subtle floor shadow, clean styling.',
+    'No text, no logo, no watermark.',
+  ].join(' ');
+}
+
+function makeFallbackSvg(text, width = 300, height = 300) {
+  const safeText = String(text || '').slice(0, 40);
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+      <rect width="100%" height="100%" fill="#e2e8f0"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+        font-family="Noto Sans KR, Arial, sans-serif" font-size="16" fill="#64748b">${safeText}</text>
+    </svg>
+  `;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+function wireImageLoading(img, fallbackLabel, fallbackWidth, fallbackHeight) {
+  img.classList.remove('is-loaded');
+  img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+  img.addEventListener('error', () => {
+    img.src = makeFallbackSvg(fallbackLabel, fallbackWidth, fallbackHeight);
+  }, { once: true });
 }
 
 // === Temperature Range Labels ===
@@ -423,12 +462,25 @@ function renderOutfit(feelsLike, situation) {
   tempLabel.className = `temp-label ${rangeInfo.cssClass}`;
 
   const fullOutfitImg = document.getElementById('full-outfit-img');
-  const fullOutfitUrl = FULL_OUTFITS[currentGender][category];
+  const fullOutfitPrompt = buildOutfitPrompt({
+    gender: currentGender,
+    situation,
+    category,
+  });
+  const fullOutfitUrl = buildAIImageUrl(fullOutfitPrompt, {
+    width: AI_IMAGE_CONFIG.outfitWidth,
+    height: AI_IMAGE_CONFIG.outfitHeight,
+    seed: hashString(`outfit-${currentGender}-${situation}-${category}`) % 100000,
+  });
   const fullOutfitContainer = document.getElementById('full-outfit-container');
 
-  if (fullOutfitImg && fullOutfitUrl && fullOutfitContainer) {
+  if (fullOutfitImg && fullOutfitContainer) {
+    fullOutfitImg.classList.add('ai-image');
+    fullOutfitImg.loading = 'lazy';
+    fullOutfitImg.decoding = 'async';
     fullOutfitImg.src = fullOutfitUrl;
-    fullOutfitImg.alt = `${currentGender === 'male' ? 'Men' : 'Women'}'s outfit example`;
+    fullOutfitImg.alt = `${currentGender === 'male' ? 'Men' : 'Women'} outfit example`;
+    wireImageLoading(fullOutfitImg, fullOutfitImg.alt, AI_IMAGE_CONFIG.outfitWidth, AI_IMAGE_CONFIG.outfitHeight);
     fullOutfitContainer.classList.remove('hidden');
   } else if (fullOutfitContainer) {
     fullOutfitContainer.classList.add('hidden');
@@ -436,13 +488,28 @@ function renderOutfit(feelsLike, situation) {
 
   const cardsContainer = document.getElementById('outfit-cards');
   cardsContainer.innerHTML = items
-    .map(([imgKey, name, desc]) => `
-      <div class="outfit-card">
-        <img class="outfit-img" src="${getImg(imgKey)}" alt="${name}" loading="lazy">
-        <div class="name">${name}</div>
-        <div class="desc">${desc}</div>
-      </div>
-    `).join('');
+    .map(([imgKey, name, desc]) => {
+      const prompt = buildItemPrompt({
+        itemKey: imgKey,
+        gender: currentGender,
+        situation,
+        category,
+      });
+      const imgUrl = buildAIImageUrl(prompt, {
+        seed: hashString(`${imgKey}-${currentGender}-${situation}-${category}`) % 100000,
+      });
+      return `
+        <div class="outfit-card">
+          <img class="outfit-img ai-image" src="${imgUrl}" alt="${name}" loading="lazy" decoding="async" data-label="${name}">
+          <div class="name">${name}</div>
+          <div class="desc">${desc}</div>
+        </div>
+      `;
+    }).join('');
+
+  cardsContainer.querySelectorAll('img.outfit-img').forEach((img) => {
+    wireImageLoading(img, img.dataset.label || 'Outfit', AI_IMAGE_CONFIG.width, AI_IMAGE_CONFIG.height);
+  });
 
   cardsContainer.classList.remove('fade-in');
   void cardsContainer.offsetWidth;

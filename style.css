@@ -478,6 +478,32 @@ body.dark-mode .error-msg {
   transition: background-color var(--transition), color var(--transition);
 }
 
+.ai-note {
+  margin: -8px 0 16px;
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+}
+
+.full-outfit-container {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  margin-bottom: 18px;
+}
+
+#full-outfit-img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #e2e8f0;
+}
+
+body.dark-mode #full-outfit-img {
+  background: #4a5568;
+}
+
 .temp-label.very-hot { background: #fff5f5; color: #e53e3e; }
 .temp-label.hot { background: #fffaf0; color: #dd6b20; }
 .temp-label.warm { background: #fefcbf; color: #b7791f; }
@@ -541,8 +567,29 @@ body.dark-mode .temp-label.freezing { background: #4a4a4a; color: #e2e8f0; }
   background: #e2e8f0;
 }
 
+.ai-image {
+  background: linear-gradient(110deg, #e2e8f0 8%, #f8fafc 18%, #e2e8f0 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+.ai-image.is-loaded {
+  animation: none;
+  background: none;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
 body.dark-mode .outfit-card .outfit-img {
     background: #4a5568;
+}
+
+body.dark-mode .ai-image {
+  background: linear-gradient(110deg, #3c4657 8%, #4a5568 18%, #3c4657 33%);
 }
 
 .outfit-card .icon {
