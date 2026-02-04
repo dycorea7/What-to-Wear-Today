@@ -21,8 +21,10 @@
       enable = true;
       previews = {
         web = {
-          command = ["python3" "-m" "http.server" "$PORT" "--bind" "0.0.0.0"];
+          command = ["node" "server.js"];
+          env = { PORT = "3000"; };
           manager = "web";
+          cwd = "/home/user/weather-outfit";
         };
       };
     };
