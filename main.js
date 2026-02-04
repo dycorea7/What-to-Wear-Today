@@ -135,16 +135,9 @@ const weatherIcons = {
 
 // === AI Image Generation ===
 const AI_IMAGE_CONFIG = {
-  provider: 'openai',
-  endpoint: '/api/image',
-  sizes: {
-    square: '1024x1024',
-    portrait: '1024x1536',
-    landscape: '1536x1024',
-  },
+  mode: 'static',
+  basePath: '/ai-images',
 };
-
-const TRANSPARENT_PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 
 const ITEM_LABELS = {
   beanie: 'beanie',
@@ -222,63 +215,12 @@ const SITUATION_PROMPTS = {
   exercise: 'athleisure',
 };
 
-const aiImageCache = new Map();
-
-function resolveImageSize({ width, height, type } = {}) {
-  if (type === 'portrait') return AI_IMAGE_CONFIG.sizes.portrait;
-  if (type === 'landscape') return AI_IMAGE_CONFIG.sizes.landscape;
-  if (type === 'square') return AI_IMAGE_CONFIG.sizes.square;
-  if (width && height) {
-    if (width > height) return AI_IMAGE_CONFIG.sizes.landscape;
-    if (height > width) return AI_IMAGE_CONFIG.sizes.portrait;
-  }
-  return AI_IMAGE_CONFIG.sizes.square;
+function getStaticItemImageUrl({ gender, situation, category, itemKey }) {
+  return `${AI_IMAGE_CONFIG.basePath}/items/${gender}/${situation}/${category}/${itemKey}.png`;
 }
 
-async function fetchAIImage(prompt, size) {
-  const cacheKey = `${size}|${prompt}`;
-  if (aiImageCache.has(cacheKey)) {
-    return aiImageCache.get(cacheKey);
-  }
-
-  const res = await fetch(AI_IMAGE_CONFIG.endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, size }),
-  });
-
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    const errMsg = errData?.error || errData?.message || 'AI image request failed.';
-    throw new Error(errMsg);
-  }
-
-  const data = await res.json();
-  if (!data?.dataUrl) {
-    throw new Error('AI image response missing dataUrl.');
-  }
-
-  aiImageCache.set(cacheKey, data.dataUrl);
-  return data.dataUrl;
-}
-
-function parseSize(size) {
-  const [w, h] = String(size || '').split('x').map((val) => Number.parseInt(val, 10));
-  if (!Number.isFinite(w) || !Number.isFinite(h)) {
-    return { width: 512, height: 512 };
-  }
-  return { width: w, height: h };
-}
-
-async function loadAIImage(img, prompt, size) {
-  const { width, height } = parseSize(size);
-  wireImageLoading(img, img.dataset.label || 'Outfit', width, height);
-  try {
-    const dataUrl = await fetchAIImage(prompt, size);
-    img.src = dataUrl;
-  } catch (err) {
-    img.src = makeFallbackSvg(img.dataset.label || 'Outfit', width, height);
-  }
+function getStaticOutfitImageUrl({ gender, situation, category }) {
+  return `${AI_IMAGE_CONFIG.basePath}/outfits/${gender}/${situation}/${category}.png`;
 }
 
 function buildItemPrompt({ itemKey, gender, situation, category }) {
@@ -292,6 +234,7 @@ function buildItemPrompt({ itemKey, gender, situation, category }) {
     'Luxury fashion magazine aesthetic, soft diffused studio lighting, realistic fabric texture, high detail.',
     'Monotone palette (black, gray, white) with minimal accents.',
     'Soft neutral gradient background with subtle floor shadow, clean styling.',
+    'Front-facing, full face visible, no face cropped.',
     'No text, no logo, no watermark.',
   ].join(' ');
 }
@@ -306,6 +249,7 @@ function buildOutfitPrompt({ gender, situation, category }) {
     'Luxury fashion magazine aesthetic, soft diffused studio lighting, high detail.',
     'Monotone palette (black, gray, white) with minimal accents.',
     'Soft neutral gradient background with subtle floor shadow, clean styling.',
+    'Front-facing, full face visible, no face cropped.',
     'No text, no logo, no watermark.',
   ].join(' ');
 }
@@ -503,21 +447,20 @@ function renderOutfit(feelsLike, situation) {
   tempLabel.className = `temp-label ${rangeInfo.cssClass}`;
 
   const fullOutfitImg = document.getElementById('full-outfit-img');
-  const fullOutfitPrompt = buildOutfitPrompt({
+  const fullOutfitUrl = getStaticOutfitImageUrl({
     gender: currentGender,
     situation,
     category,
   });
-  const fullOutfitSize = resolveImageSize({ type: 'portrait' });
   const fullOutfitContainer = document.getElementById('full-outfit-container');
 
   if (fullOutfitImg && fullOutfitContainer) {
     fullOutfitImg.classList.add('ai-image');
     fullOutfitImg.loading = 'lazy';
     fullOutfitImg.decoding = 'async';
-    fullOutfitImg.src = TRANSPARENT_PIXEL;
+    fullOutfitImg.src = fullOutfitUrl;
     fullOutfitImg.alt = `${currentGender === 'male' ? 'Men' : 'Women'} outfit example`;
-    loadAIImage(fullOutfitImg, fullOutfitPrompt, fullOutfitSize);
+    wireImageLoading(fullOutfitImg, fullOutfitImg.alt, 1024, 1536);
     fullOutfitContainer.classList.remove('hidden');
   } else if (fullOutfitContainer) {
     fullOutfitContainer.classList.add('hidden');
@@ -526,16 +469,15 @@ function renderOutfit(feelsLike, situation) {
   const cardsContainer = document.getElementById('outfit-cards');
   cardsContainer.innerHTML = items
     .map(([imgKey, name, desc]) => {
-      const prompt = buildItemPrompt({
+      const imgUrl = getStaticItemImageUrl({
         itemKey: imgKey,
         gender: currentGender,
         situation,
         category,
       });
-      const imgSize = resolveImageSize({ type: 'square' });
       return `
         <div class="outfit-card">
-          <img class="outfit-img ai-image" src="${TRANSPARENT_PIXEL}" alt="${name}" loading="lazy" decoding="async" data-label="${name}" data-prompt="${prompt}" data-size="${imgSize}">
+          <img class="outfit-img ai-image" src="${imgUrl}" alt="${name}" loading="lazy" decoding="async" data-label="${name}">
           <div class="name">${name}</div>
           <div class="desc">${desc}</div>
         </div>
@@ -543,9 +485,7 @@ function renderOutfit(feelsLike, situation) {
     }).join('');
 
   cardsContainer.querySelectorAll('img.outfit-img').forEach((img) => {
-    const prompt = img.dataset.prompt;
-    const size = img.dataset.size || resolveImageSize({ type: 'square' });
-    loadAIImage(img, prompt, size);
+    wireImageLoading(img, img.dataset.label || 'Outfit', 1024, 1024);
   });
 
   cardsContainer.classList.remove('fade-in');
