@@ -182,9 +182,14 @@ async function writeImage(filePath, prompt, size) {
   if (fs.existsSync(filePath)) {
     return { skipped: true };
   }
-  const buffer = await generateImage(prompt, size);
-  fs.writeFileSync(filePath, buffer);
-  return { skipped: false };
+  try {
+    const buffer = await generateImage(prompt, size);
+    fs.writeFileSync(filePath, buffer);
+    return { skipped: false, success: true };
+  } catch (err) {
+    console.log(`  FAILED: ${path.basename(filePath)} - ${err.message}`);
+    return { skipped: false, success: false };
+  }
 }
 
 async function main() {
@@ -201,6 +206,8 @@ async function main() {
 
   let total = 0;
   let skipped = 0;
+  let generated = 0;
+  let failed = 0;
 
   for (const gender of GENDERS) {
     for (const situation of SITUATIONS) {
@@ -209,9 +216,12 @@ async function main() {
         const outfitPath = path.join(OUTFIT_DIR, gender, situation);
         ensureDir(outfitPath);
         const outfitFile = path.join(outfitPath, `${category}.png`);
+        console.log(`[${gender}/${situation}/${category}] outfit...`);
         const outfitResult = await writeImage(outfitFile, outfitPrompt, SIZE_OUTFIT);
         total += 1;
-        if (outfitResult.skipped) skipped += 1;
+        if (outfitResult.skipped) { skipped += 1; }
+        else if (outfitResult.success) { generated += 1; console.log(`  OK: ${category}.png`); }
+        else { failed += 1; }
 
         let items;
         if (situation === 'casual' || !situationItems[situation]) {
@@ -233,13 +243,15 @@ async function main() {
           const itemFile = path.join(itemDir, `${imgKey}.png`);
           const itemResult = await writeImage(itemFile, prompt, SIZE_ITEM);
           total += 1;
-          if (itemResult.skipped) skipped += 1;
+          if (itemResult.skipped) { skipped += 1; }
+          else if (itemResult.success) { generated += 1; console.log(`  OK: ${imgKey}.png`); }
+          else { failed += 1; }
         }
       }
     }
   }
 
-  console.log(`Done. Generated ${total - skipped} images, skipped ${skipped} existing.`);
+  console.log(`\nDone. Generated: ${generated}, Skipped: ${skipped}, Failed: ${failed} (Total: ${total})`);
 }
 
 main().catch((err) => {
